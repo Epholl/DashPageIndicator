@@ -2,4 +2,5 @@
 <resources>
     <color name="page_indicator_active">#ffffff</color>
     <color name="page_indicator_inactive">#505050</color>
+    <color name="pac_man_color">#FFFF00</color>
 </resources>

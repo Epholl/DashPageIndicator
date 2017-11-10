@@ -1,12 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <declare-styleable name="DashPageIndicator">
-        <attr format="dimension" name="dotRadius"/>
-        <attr format="dimension" name="dotSpace"/>
-        <attr format="dimension" name="activeDotWidth"/>
+    <declare-styleable name="EasyPageIndicator">
+        <attr format="dimension" name="itemWidth"/>
         <attr format="color" name="activeColor"/>
         <attr format="color" name="inactiveColor"/>
-        <attr format="integer" name="pageCount"/>
-        <attr format="integer" name="currentPage"/>
+        <attr format="dimension" name="activeRadius"/>
+        <attr format="dimension" name="inactiveRadius"/>
+    </declare-styleable>
+
+    <declare-styleable name="DashPageIndicator">
+        <attr format="dimension" name="dashWidth"/>
+    </declare-styleable>
+
+    <declare-styleable name="PacManPageIndicator">
+        <attr format="color" name="pacManColor"/>
     </declare-styleable>
 </resources>

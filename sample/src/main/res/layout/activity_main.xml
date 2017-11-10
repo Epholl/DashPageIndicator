@@ -13,10 +13,102 @@
         android:id="@+id/view_pager">
     </android.support.v4.view.ViewPager>
 
-    <eu.inloop.dashpageindicator.DashPageIndicator
-        android:layout_width="match_parent"
+    <LinearLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:id="@+id/page_indicator"
-        android:layout_alignParentBottom="true"/>
+        android:orientation="vertical"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        >
+
+        <eu.inloop.dashpageindicator.StandardDotPageIndicator
+            android:layout_gravity="center_horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/page_indicator1"
+            android:layout_marginBottom="8dp"/>
+
+        <eu.inloop.dashpageindicator.StandardDotPageIndicator
+            android:layout_gravity="center_horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/page_indicator2"
+            app:activeColor="#ffffffff"
+            app:inactiveColor="#55ffffff"
+            android:layout_marginBottom="8dp"/>
+
+        <eu.inloop.dashpageindicator.ProgressiveDotPageIndicator
+            android:layout_gravity="center_horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/page_indicator3"
+            android:layout_marginBottom="8dp"
+            app:inactiveRadius="0.5dp"/>
+
+        <eu.inloop.dashpageindicator.ProgressiveDotPageIndicator
+            android:layout_gravity="center_horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/page_indicator4"
+            android:layout_marginBottom="8dp"
+            app:itemWidth="14dp"
+            app:activeRadius="2dp"
+            app:inactiveRadius="2dp"
+            app:activeColor="#ffffffff"
+            app:inactiveColor="#00ffffff"/>
+
+        <eu.inloop.dashpageindicator.ArcAdditivePageIndicator
+            android:layout_gravity="center_horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/page_indicator5"
+            android:layout_marginBottom="8dp"
+            app:activeColor="#ffffff"
+            app:inactiveColor="#000000"
+            app:inactiveRadius="2.5dp"/>
+
+        <eu.inloop.dashpageindicator.GrowingCircleAdditivePageIndicator
+            android:layout_gravity="center_horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/page_indicator6"
+            android:layout_marginBottom="8dp"
+            app:activeColor="#ffffff"
+            app:inactiveColor="#000000"/>
+
+        <eu.inloop.dashpageindicator.ArcPageIndicator
+            android:layout_gravity="center_horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/page_indicator7"
+            android:layout_marginBottom="8dp"
+            app:activeColor="#ffffff"
+            app:inactiveColor="#ffffff"/>
+
+        <eu.inloop.dashpageindicator.DashPageIndicator
+            android:layout_gravity="center_horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/page_indicator8"
+            android:layout_marginBottom="8dp"
+            app:activeRadius="1.5dp"/>
+
+        <eu.inloop.dashpageindicator.DashPageIndicator
+            android:layout_gravity="center_horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/page_indicator9"
+            android:layout_marginBottom="8dp"
+            app:activeRadius="1dp"
+            app:inactiveRadius="1dp"
+            app:inactiveColor="#88ffffff"/>
+
+        <eu.inloop.dashpageindicator.PacManPageIndicator
+            android:layout_gravity="center_horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/page_indicator10"
+            android:layout_marginBottom="8dp"/>
+
+    </LinearLayout>
 </RelativeLayout>
