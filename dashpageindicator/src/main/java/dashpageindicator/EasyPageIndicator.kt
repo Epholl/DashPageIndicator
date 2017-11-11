@@ -34,7 +34,7 @@ abstract class EasyPageIndicator : View {
 
     var itemWidth: Int = 0
 
-    var pageCount: Int = 0
+    var itemCount: Int = 0
 
     var centerY: Float = 0f
     var leftX: Int = 0
@@ -105,6 +105,10 @@ abstract class EasyPageIndicator : View {
         private set
         get() = 1 - activeRatio
 
+    var totalCompletionRatio: Float = 0f
+        private set
+        get() = if (itemCount <= 1) 1f else (currentViewPagerPosition) / (itemCount -1)
+
     constructor(context: Context) : super(context) {
         init(context, null)
     }
@@ -171,7 +175,7 @@ abstract class EasyPageIndicator : View {
     }
 
     override fun getSuggestedMinimumWidth(): Int {
-        return itemWidth * pageCount
+        return itemWidth * itemCount
     }
 
     override fun getSuggestedMinimumHeight(): Int {
@@ -198,8 +202,8 @@ abstract class EasyPageIndicator : View {
     }
 
     protected open fun getItemCenterX(index: Float): Float {
-        if (index < 0 || index >= pageCount) {
-            throw IllegalArgumentException("Requested index $index out of range 0 - $pageCount")
+        if (index < 0 || index >= itemCount) {
+            throw IllegalArgumentException("Requested index $index out of range 0 - $itemCount")
         } else {
             return (leftX + (index * itemWidth))
         }
@@ -213,7 +217,7 @@ abstract class EasyPageIndicator : View {
      * Computed width in pixels that is needed for dots.
      */
     private fun contentWidth(): Int {
-        return itemWidth * pageCount
+        return itemWidth * itemCount
     }
 
     /**
@@ -223,7 +227,7 @@ abstract class EasyPageIndicator : View {
         if (viewPager.adapter == null) {
             throw IllegalArgumentException("ViewPager must have PagerAdapter set")
         }
-        pageCount = viewPager.adapter.count
+        itemCount = viewPager.adapter.count
         viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
                 setScrollState(position, positionOffset)
@@ -241,14 +245,14 @@ abstract class EasyPageIndicator : View {
     }
 
     override fun onDraw(canvas: Canvas) {
-        if (pageCount < 1) {
+        if (itemCount < 1) {
             visibility = View.GONE
             return
         }
         super.onDraw(canvas)
 
         beforeDraw(canvas)
-        for (i in 0..pageCount - 1) {
+        for (i in 0..itemCount - 1) {
             currentItem = i
             drawDot(canvas, i)
         }
