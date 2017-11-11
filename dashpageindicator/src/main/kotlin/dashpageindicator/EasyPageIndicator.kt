@@ -49,16 +49,21 @@ abstract class EasyPageIndicator : View {
             previousViewPagerPosition = field
             field = value
             if (isMovingRight && Math.floor(value.toDouble()).toInt() != Math.floor(previousViewPagerPosition.toDouble()).toInt()) {
-                lastVisitedPosition = value.toInt()
+                lastVisitedPosition = Math.round(value)
             } else if (isMovingLeft && Math.ceil(value.toDouble()).toInt() != Math.ceil(previousViewPagerPosition.toDouble()).toInt()) {
-                lastVisitedPosition = value.toInt()
+                lastVisitedPosition = Math.round(value)
             }
         }
+
     var previousViewPagerPosition: Float = 0f
         private set
 
     var lastVisitedPosition: Int = 0
         private set
+
+    var viewPagerPositionDelta: Float = 0f
+        private set
+        get() = currentViewPagerPosition - previousViewPagerPosition
 
     var difference: Float = 0f
         private set
@@ -122,7 +127,7 @@ abstract class EasyPageIndicator : View {
         invalidate()
     }
 
-    fun initAttributes(context: Context, attrs: AttributeSet?) {
+    private fun initAttributes(context: Context, attrs: AttributeSet?) {
         val attr = context.obtainStyledAttributes(attrs, R.styleable.EasyPageIndicator, 0, 0) ?: return
         try {
             itemWidth = attr.getDimension(R.styleable.EasyPageIndicator_itemWidth, dp2px(DEFAULT_ITEM_WIDTH_DP).toFloat()).toInt()
@@ -130,13 +135,10 @@ abstract class EasyPageIndicator : View {
             inactiveColor = attr.getColor(R.styleable.EasyPageIndicator_inactiveColor, ContextCompat.getColor(context, DEFAULT_ITEM_COLOR))
             activeDotRadius = attr.getDimension(R.styleable.EasyPageIndicator_activeRadius, dp2px(DEFAULT_ACTIVE_DOT_WIDTH_DP).toFloat()).toInt()
             inactiveDotRadius = attr.getDimension(R.styleable.EasyPageIndicator_inactiveRadius, dp2px(DEFAULT_INACTIVE_DOT_WIDTH_DP).toFloat()).toInt()
-            initCustomAttributes(context, attrs)
         } finally {
             attr.recycle()
         }
     }
-
-    open fun initCustomAttributes(context: Context, attrs: AttributeSet?) { }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
 

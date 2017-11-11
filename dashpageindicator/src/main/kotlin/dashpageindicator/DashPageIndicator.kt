@@ -17,13 +17,12 @@ class DashPageIndicator : EasyPageIndicator {
     var paint = Paint(Paint.ANTI_ALIAS_FLAG)
 
     constructor(context: Context) : super(context)
-    constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
-    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
+    constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {initAttributes(context, attrs)}
+    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {initAttributes(context, attrs)}
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes)
+    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes) {initAttributes(context, attrs)}
 
-    override fun initCustomAttributes(context: Context, attrs: AttributeSet?) {
-        super.initCustomAttributes(context, attrs)
+    fun initAttributes(context: Context, attrs: AttributeSet?) {
         val attr = context.obtainStyledAttributes(attrs, R.styleable.DashPageIndicator, 0, 0) ?: return
         try {
             dashWidth = attr.getDimension(R.styleable.DashPageIndicator_dashWidth, dp2px(DEFAULT_DASH_WIDTH_DP).toFloat()).toInt()

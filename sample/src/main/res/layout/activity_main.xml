@@ -108,7 +108,19 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/page_indicator10"
-            android:layout_marginBottom="8dp"/>
+            android:layout_marginBottom="8dp"
+            app:inactiveRadius="1dp"
+            app:inactiveColor="#000000"/>
+
+        <eu.inloop.dashpageindicator.PacManPageIndicator
+            android:layout_gravity="center_horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/page_indicator11"
+            android:layout_marginBottom="8dp"
+            app:inactiveRadius="1dp"
+            app:inactiveColor="#00000000"
+            app:pacManOpenMouthDegrees="210"/>
 
     </LinearLayout>
 </RelativeLayout>

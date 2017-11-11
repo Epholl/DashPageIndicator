@@ -14,5 +14,6 @@
 
     <declare-styleable name="PacManPageIndicator">
         <attr format="color" name="pacManColor"/>
+        <attr format="integer" name="pacManOpenMouthDegrees"/>
     </declare-styleable>
 </resources>
