@@ -262,7 +262,7 @@ abstract class EasyPageIndicator : View {
 
     open fun beforeDraw(canvas: Canvas) { }
 
-    abstract fun drawDot(canvas: Canvas, position: Int)
+    open fun drawDot(canvas: Canvas, position: Int) { }
 
     open fun afterDraw(canvas: Canvas) { }
 

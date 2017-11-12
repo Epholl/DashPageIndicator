@@ -35,6 +35,8 @@ public class MainActivity extends AppCompatActivity {
         ((EasyPageIndicator)findViewById(R.id.page_indicator9)).setViewPager(mViewPager);
         ((EasyPageIndicator)findViewById(R.id.page_indicator10)).setViewPager(mViewPager);
         ((EasyPageIndicator)findViewById(R.id.page_indicator11)).setViewPager(mViewPager);
+        ((EasyPageIndicator)findViewById(R.id.page_indicator12)).setViewPager(mViewPager);
+
 
     }
 }
