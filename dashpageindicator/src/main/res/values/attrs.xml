@@ -16,4 +16,8 @@
         <attr format="color" name="pacManColor"/>
         <attr format="integer" name="pacManOpenMouthDegrees"/>
     </declare-styleable>
+
+    <declare-styleable name="GogglyEyesPageIndicator">
+        <attr format="integer" name="swingAngle"/>
+    </declare-styleable>
 </resources>
