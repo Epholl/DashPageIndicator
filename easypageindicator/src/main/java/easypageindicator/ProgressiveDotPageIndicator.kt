@@ -7,9 +7,9 @@ import android.os.Build
 import android.util.AttributeSet
 
 /**
- * Created by Tomáš Isteník on 15/10/2017.
+ * Created by Tomáš Isteník on 05/11/2017.
  */
-open class StandardDotPageIndicator : EasyPageIndicator {
+class ProgressiveDotPageIndicator : StandardDotPageIndicator {
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
@@ -17,14 +17,13 @@ open class StandardDotPageIndicator : EasyPageIndicator {
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes)
 
-    override fun getSuggestedMinimumHeight(): Int {
-        return dp2px(activeDotRadius)*2
-    }
+    override fun drawDot(canvas: Canvas, item: CurrentItem) {
+        item.apply {
+            val size = Math.max(dp2px(activeDotRadius) / (1 + distance), dp2px(inactiveDotRadius).toFloat())
+            val color = lerp(activeColor, inactiveColor, 1 / (1 + distance))
+            activePaint.color = color
+            canvas.drawCircle(getItemCenterX(index), centerY, size, activePaint)
+        }
 
-    override fun drawDot(canvas: Canvas, position: Int) {
-        val size = activeRatio * dp2px(activeDotRadius) + inactiveRatio * dp2px(inactiveDotRadius)
-        val color = lerp(activeColor, inactiveColor, activeRatio)
-        activePaint.color = color
-        canvas.drawCircle(getItemCenterX(position), centerY, size, activePaint)
     }
 }
