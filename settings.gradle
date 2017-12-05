@@ -1,1 +1,1 @@
-include ':dashpageindicator', ':sample'
+include ':easypageindicator', ':sample'

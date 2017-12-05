@@ -12,6 +12,8 @@ import android.support.v4.content.ContextCompat
 import android.support.v4.view.ViewPager
 import android.util.AttributeSet
 import android.view.View
+import extensions.isLeftOf
+import extensions.isRightOf
 
 abstract class EasyPageIndicator : View {
 
@@ -42,72 +44,63 @@ abstract class EasyPageIndicator : View {
     var activePaint = Paint(Paint.ANTI_ALIAS_FLAG)
     var inactivePaint = Paint(Paint.ANTI_ALIAS_FLAG)
 
-    var currentItem: Int = 0
+    val currentItem = CurrentItem()
 
-    var currentViewPagerPosition: Float = 0f
-        set(value) {
-            previousViewPagerPosition = field
-            field = value
-            if (isMovingRight && Math.floor(value.toDouble()).toInt() != Math.floor(previousViewPagerPosition.toDouble()).toInt()) {
-                lastVisitedPosition = Math.round(value)
-            } else if (isMovingLeft && Math.ceil(value.toDouble()).toInt() != Math.ceil(previousViewPagerPosition.toDouble()).toInt()) {
-                lastVisitedPosition = Math.round(value)
-            }
+    inner class CurrentItem {
+        var index: Int = 0
+            private set
+
+        val difference: Float get() = index - pagerPosition.current
+
+        val distance: Float get() = Math.abs(difference)
+
+        val isBefore: Boolean get() = index isLeftOf pagerPosition.current
+
+        val isAfter: Boolean get() = index isRightOf pagerPosition.current
+
+        val activeRatio: Float get() = if (distance < 1) (1 - distance) else 0f
+
+        val inactiveRatio: Float get() = 1 - activeRatio
+
+        fun update(index: Int) {
+            this.index = index
+        }
+    }
+
+    val pagerPosition = PagerPosition()
+
+    inner class PagerPosition {
+        var current: Float = 0f
+            private set
+
+        var previous: Float = 0f
+            private set
+
+        var lastVisited: Int = 0
+            private set
+
+        val delta: Float get() = current - previous
+
+        val isMovingRight: Boolean get() = current isRightOf previous
+
+        val isMovingLeft: Boolean get() = current isLeftOf previous
+
+        val totalCompletionRatio: Float get() = if (itemCount <= 1) 1f else (current) / (itemCount - 1)
+
+        fun update(position: Float) {
+            previous = current
+            current = position
+            updateLastVisited()
         }
 
-    var previousViewPagerPosition: Float = 0f
-        private set
-
-    var lastVisitedPosition: Int = 0
-        private set
-
-    var viewPagerPositionDelta: Float = 0f
-        private set
-        get() = currentViewPagerPosition - previousViewPagerPosition
-
-    var difference: Float = 0f
-        private set
-        get() = currentItem - currentViewPagerPosition
-
-    var distance: Float = 0f
-        private set
-        get() = Math.abs(currentItem - currentViewPagerPosition)
-
-    var isMovingRight: Boolean = false
-        private set
-        get() = currentViewPagerPosition > previousViewPagerPosition
-
-    var isMovingLeft: Boolean = false
-        private set
-        get() = currentViewPagerPosition < previousViewPagerPosition
-
-    var isRightOfPreviousPosition: Boolean = false
-        private set
-        get() = currentViewPagerPosition > lastVisitedPosition
-
-    var isLeftOfPreviousPosition: Boolean = false
-        private set
-        get() = currentViewPagerPosition < lastVisitedPosition
-
-    var isBefore: Boolean = false
-        private set
-        get() = currentItem < currentViewPagerPosition
-
-    var isAfter: Boolean = false
-        private set
-        get() = currentItem > currentViewPagerPosition
-
-    var activeRatio: Float = 0f
-        private set
-        get() = if (distance < 1) (1 - distance) else 0f
-
-    var inactiveRatio: Float = 1f
-        private set
-        get() = 1 - activeRatio
-
-    var totalCompletionRatio: Float = 0f
-        private set
-        get() = if (itemCount <= 1) 1f else (currentViewPagerPosition) / (itemCount -1)
+        private fun updateLastVisited() {
+            if (isMovingRight && Math.floor(current.toDouble()).toInt() != Math.floor(previous.toDouble()).toInt()) {
+                lastVisited = Math.round(current)
+            } else if (isMovingLeft && Math.ceil(current.toDouble()).toInt() != Math.ceil(previous.toDouble()).toInt()) {
+                lastVisited = Math.round(current)
+            }
+        }
+    }
 
     constructor(context: Context) : super(context) {
         init(context, null)
@@ -197,7 +190,7 @@ abstract class EasyPageIndicator : View {
     }
 
     private fun recalculatePivots() {
-        leftX = (width - contentWidth()) / 2 + (itemWidth/2)
+        leftX = (width - contentWidth()) / 2 + (itemWidth / 2)
         centerY = (height / 2).toFloat()
     }
 
@@ -233,14 +226,14 @@ abstract class EasyPageIndicator : View {
                 setScrollState(position, positionOffset)
             }
 
-            override fun onPageSelected(position: Int) { }
+            override fun onPageSelected(position: Int) {}
 
-            override fun onPageScrollStateChanged(state: Int) { }
+            override fun onPageScrollStateChanged(state: Int) {}
         })
     }
 
     private fun setScrollState(position: Int, positionOffset: Float) {
-        currentViewPagerPosition = position + positionOffset
+        pagerPosition.update(position + positionOffset)
         invalidate()
     }
 
@@ -252,19 +245,19 @@ abstract class EasyPageIndicator : View {
         super.onDraw(canvas)
 
         beforeDraw(canvas)
-        for (i in 0..itemCount - 1) {
-            currentItem = i
-            drawDot(canvas, i)
+        for (i in 0 until itemCount) {
+            currentItem.update(i)
+            drawDot(canvas, currentItem)
         }
         afterDraw(canvas)
 
     }
 
-    open fun beforeDraw(canvas: Canvas) { }
+    open fun beforeDraw(canvas: Canvas) {}
 
-    open fun drawDot(canvas: Canvas, position: Int) { }
+    open fun drawDot(canvas: Canvas, item: CurrentItem) {}
 
-    open fun afterDraw(canvas: Canvas) { }
+    open fun afterDraw(canvas: Canvas) {}
 
     protected fun dp2px(dp: Float): Int {
         return (dp * Resources.getSystem().displayMetrics.density).toInt()
@@ -275,10 +268,10 @@ abstract class EasyPageIndicator : View {
     }
 
     protected fun lerp(color1: Int, color2: Int, ratio: Float): Int {
-        val red = (Color.red(color1)*ratio + Color.red(color2)*(1-ratio)).toInt()
-        val green = (Color.green(color1)*ratio + Color.green(color2)*(1-ratio)).toInt()
-        val blue = (Color.blue(color1)*ratio + Color.blue(color2)*(1-ratio)).toInt()
-        val alpha = (Color.alpha(color1)*ratio + Color.alpha(color2)*(1-ratio)).toInt()
+        val red = (Color.red(color1) * ratio + Color.red(color2) * (1 - ratio)).toInt()
+        val green = (Color.green(color1) * ratio + Color.green(color2) * (1 - ratio)).toInt()
+        val blue = (Color.blue(color1) * ratio + Color.blue(color2) * (1 - ratio)).toInt()
+        val alpha = (Color.alpha(color1) * ratio + Color.alpha(color2) * (1 - ratio)).toInt()
         return Color.argb(alpha, red, green, blue)
     }
 
