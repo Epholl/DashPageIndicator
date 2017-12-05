@@ -7,6 +7,8 @@ import android.graphics.Paint
 import android.os.Build
 import android.support.v4.content.ContextCompat
 import android.util.AttributeSet
+import extensions.isLeftOf
+import extensions.isRightOf
 
 /**
  * Created by Tomáš Isteník on 09/11/2017.
@@ -39,32 +41,35 @@ class PacManPageIndicator : EasyPageIndicator {
         }
     }
 
-    override fun drawDot(canvas: Canvas, position: Int) {
-        if (isAfter) {
-            canvas.drawCircle(getItemCenterX(position), centerY, dp2px(inactiveDotRadius).toFloat(), activePaint)
-        } else {
-            canvas.drawCircle(getItemCenterX(position), centerY, dp2px(inactiveDotRadius).toFloat(), inactivePaint)
+    override fun drawDot(canvas: Canvas, item: CurrentItem) {
+        item.apply {
+            if (index isRightOf pagerPosition.current) {
+                canvas.drawCircle(getItemCenterX(index), centerY, dp2px(inactiveDotRadius).toFloat(), activePaint)
+            } else {
+                canvas.drawCircle(getItemCenterX(index), centerY, dp2px(inactiveDotRadius).toFloat(), inactivePaint)
+            }
         }
     }
 
     override fun afterDraw(canvas: Canvas) {
         super.afterDraw(canvas)
         val edgeLength = dp2px(activeDotRadius*2).toFloat()
-        val rect = getRectangle(getItemCenterX(currentViewPagerPosition), centerY, edgeLength, edgeLength)
+        val rect = getRectangle(getItemCenterX(pagerPosition.current), centerY, edgeLength, edgeLength)
         when {
-            isRightOfPreviousPosition -> {
-                val ratio = Math.min(currentViewPagerPosition % 1, 1 - (currentViewPagerPosition % 1))
+            pagerPosition.current isRightOf pagerPosition.lastVisited -> {
+                val ratio = Math.min(pagerPosition.current % 1, 1 - (pagerPosition.current % 1))
                 val degrees = 360 - (2 * ratio * pacManMouthOpenDegrees)
                 val startDegree = 180 - (degrees / 2)
                 canvas.drawArc(rect, startDegree, degrees, true, pacManPaint)
             }
-            isLeftOfPreviousPosition -> {
-                val ratio = Math.min(currentViewPagerPosition % 1, 1 - (currentViewPagerPosition % 1))
+            pagerPosition.current isLeftOf pagerPosition.lastVisited -> {
+                val ratio = Math.min(pagerPosition.current % 1, 1 - (pagerPosition.current % 1))
                 val degrees = 360 - (2 * ratio * pacManMouthOpenDegrees)
                 val startDegree = - (degrees / 2)
                 canvas.drawArc(rect, startDegree, degrees, true, pacManPaint)
             }
-            else -> canvas.drawCircle(getItemCenterX(currentViewPagerPosition), centerY, dp2px(activeDotRadius).toFloat(), pacManPaint)
+            else ->
+                canvas.drawCircle(getItemCenterX(pagerPosition.current), centerY, dp2px(activeDotRadius).toFloat(), pacManPaint)
         }
     }
 

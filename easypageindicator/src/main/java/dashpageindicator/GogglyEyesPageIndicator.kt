@@ -5,7 +5,6 @@ import android.content.Context
 import android.graphics.Canvas
 import android.os.Build
 import android.util.AttributeSet
-import android.util.Log
 import eu.inloop.dashpageindicator.EasyPageIndicator
 import eu.inloop.dashpageindicator.R
 
@@ -31,17 +30,19 @@ class GogglyEyesPageIndicator : EasyPageIndicator {
         }
     }
 
-    override fun drawDot(canvas: Canvas, position: Int) {
-        val centerX = getItemCenterX(position)
-        canvas.drawCircle(centerX, centerY, dp2px(activeDotRadius).toFloat(), activePaint)
-        val ratio = (-difference / (itemCount-1))
-        Log.e("Tag", "Ratio: $ratio")
-        val angle: Double = (-Math.PI / 2) + ratio * (Math.PI * (swingAngle.toFloat() / 180f))
-        val arcLength = Math.max(0, dp2px(activeDotRadius - inactiveDotRadius))
-        val sin = (Math.sin(angle) * arcLength) + centerY
-        val cos = (Math.cos(angle) * arcLength) + centerX
-        canvas.drawCircle(cos.toFloat(), sin.toFloat(), dp2px(inactiveDotRadius).toFloat(), inactivePaint)
+    override fun drawDot(canvas: Canvas, item: CurrentItem) {
+        item.apply {
+            val centerX = getItemCenterX(index)
+            canvas.drawCircle(centerX, centerY, dp2px(activeDotRadius).toFloat(), activePaint)
 
+            val ratio = (-difference / (itemCount-1))
+            val angle: Double = (-Math.PI / 2) + ratio * (Math.PI * (swingAngle.toFloat() / 180f))
+            val arcLength = Math.max(0, dp2px(activeDotRadius - inactiveDotRadius))
+            val sin = (Math.sin(angle) * arcLength) + centerY
+            val cos = (Math.cos(angle) * arcLength) + centerX
+
+            canvas.drawCircle(cos.toFloat(), sin.toFloat(), dp2px(inactiveDotRadius).toFloat(), inactivePaint)
+        }
     }
 
     companion object {

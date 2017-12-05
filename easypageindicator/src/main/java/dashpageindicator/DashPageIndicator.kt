@@ -6,6 +6,8 @@ import android.graphics.Canvas
 import android.graphics.Paint
 import android.os.Build
 import android.util.AttributeSet
+import extensions.isLeftOf
+import extensions.isRightOf
 
 /**
  * Created by Tomáš Isteník on 08/11/2017.
@@ -37,28 +39,32 @@ class DashPageIndicator : EasyPageIndicator {
 
     fun getOffsetItemCenterX(index: Float): Float {
         var centerX = getItemCenterX(index)
-        if (index < currentViewPagerPosition) {
-            centerX -= (dashWidth / 2)
-        } else if (index > currentViewPagerPosition) {
-            centerX += (dashWidth / 2)
+
+        return when {
+            index isLeftOf pagerPosition.current -> centerX - (dashWidth / 2)
+            index isRightOf pagerPosition.current -> centerX + (dashWidth / 2)
+            else -> centerX
         }
-        return centerX
     }
 
-    override fun drawDot(canvas: Canvas, position: Int) {
-        if (distance >= 1) {
-            canvas.drawCircle(getOffsetItemCenterX(position.toFloat()), centerY, dp2px(inactiveDotRadius).toFloat(), inactivePaint)
-        } else {
-            val ratio = 1 - distance
-            val activeCenter = getItemCenterX(position)
-            val inactiveCenter = getOffsetItemCenterX(position.toFloat())
-            val realCenter = (ratio * activeCenter) + ((1-ratio) * inactiveCenter)
+    override fun drawDot(canvas: Canvas, item: CurrentItem) {
+        item.apply {
 
-            val color = lerp(activeColor, inactiveColor, ratio)
-            paint.color = color
+            if (distance >= 1) {
+                canvas.drawCircle(getOffsetItemCenterX(index.toFloat()), centerY, dp2px(inactiveDotRadius).toFloat(), inactivePaint)
+            } else {
+                val ratio = 1 - distance
+                val activeCenter = getItemCenterX(index)
+                val inactiveCenter = getOffsetItemCenterX(index.toFloat())
+                val realCenter = (ratio * activeCenter) + ((1-ratio) * inactiveCenter)
 
-            drawDash(canvas, realCenter, activeDotRadius.toFloat(), ratio, paint)
+                val color = lerp(activeColor, inactiveColor, ratio)
+                paint.color = color
+
+                drawDash(canvas, realCenter, activeDotRadius.toFloat(), ratio, paint)
+            }
         }
+
     }
 
     fun drawDash(canvas: Canvas, center: Float, radius: Float, ratio: Float, paint: Paint) {
